@@ -1,12 +1,4 @@
 # -------------------------
-# C/C++ Source Files
-# -------------------------
-*.c
-*.h
-*.cpp
-*.hpp
-
-# -------------------------
 # Compiled Object Files
 # -------------------------
 *.o
@@ -43,5 +35,5 @@ a.out
 *.tmp
 *.log
 
-.cache
+.cache/
 compile_commands.json
