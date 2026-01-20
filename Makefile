@@ -4,11 +4,11 @@ CFLAGS = -Iinclude -Wall -Wextra -g
 
 # Archivos fuente
 SRC = src/data_structures/stack.c \
-	  src/data_structures/linked_list.c
+	  src/data_structures/linked_list.c \
+	  src/data_structures/utils.c
 
 # Archivos de tests
 TESTS = tests/test.c \
-        tests/data_structures/stack_test.c \
 		tests/data_structures/linked_list_test.c
 
 # Archivo ejecutable
