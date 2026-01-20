@@ -1,6 +1,7 @@
-#include "linked_list.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include "linked_list.h"
+#include "utils.h"
 
 typedef struct Node {
     void* elem;
@@ -11,6 +12,10 @@ struct LinkedList {
     Node* head;
     size_t elem_size;
     size_t size;
+
+    copy_fn copy;
+    destroy_fn destroy;
+    compare_fn compare;
 };
 
 /*
@@ -19,8 +24,8 @@ struct LinkedList {
 
 // STATE METHODS
 
-LinkedList* linked_list_create(size_t elem_size) {
-    if (elem_size == 0) return NULL;
+LinkedList* linked_list_create(size_t elem_size, copy_fn copy, destroy_fn destroy, compare_fn compare) {
+    if (elem_size == 0 || !compare) return NULL;
 
     LinkedList* list = malloc(sizeof(LinkedList));
     if (!list) return NULL;
@@ -28,6 +33,10 @@ LinkedList* linked_list_create(size_t elem_size) {
     list->elem_size = elem_size;
     list->size = 0;
     list->head = NULL;
+
+    list->copy = copy;
+    list->destroy = destroy;
+    list->compare = compare;
 
     return list;
 }
@@ -38,7 +47,11 @@ void linked_list_destroy(LinkedList **list) {
     Node* curr = (*list)->head;
     while (curr) {
         Node* tmp = curr->next;
-        free(curr->elem);
+        if ((*list)->destroy) {
+            (*list)->destroy(curr->elem);
+        } else {
+            free(curr->elem);
+        }
         free(curr);
         curr = tmp;
     }
@@ -62,16 +75,18 @@ LinkedListStatus linked_list_insert_at(LinkedList *list, size_t pos, void *elem)
         free(new_node);
         return LINKED_LIST_ERR_ASSIGN_MEM;
     }
-    memcpy(new_node->elem, elem, list->elem_size);
 
-    if (list->head == NULL) {
-        list->head = new_node;
-        new_node->next = NULL;
+    if (list->copy) {
+        list->copy(new_node->elem, elem);
+    } else {
+        memcpy(new_node->elem, elem, list->elem_size);
     }
 
     if (pos == 0) {
         new_node->next = list->head;
         list->head = new_node;
+        list->size++;
+        return LINKED_LIST_OK;
     }
 
     Node* curr = list->head;
@@ -95,8 +110,8 @@ LinkedListStatus linked_list_push(LinkedList* list, void* elem) {
 
 // DELETION METHODS
 
-LinkedListStatus linked_list_delete(LinkedList *list, void* elem, bool (*cmp_fn)(void*, void*)) {
-    if (!list || !elem || !cmp_fn) return LINKED_LIST_ERR_NULL;
+LinkedListStatus linked_list_delete(LinkedList *list, void* elem) {
+    if (!list || !elem) return LINKED_LIST_ERR_NULL;
 
     if (linked_list_is_empty(list)) return LINKED_LIST_ERR_EMPTY;
 
@@ -104,7 +119,7 @@ LinkedListStatus linked_list_delete(LinkedList *list, void* elem, bool (*cmp_fn)
     Node* prev = NULL;
 
     for (size_t i = 0; i < list->size; i++) {
-        if (cmp_fn(curr->elem, elem)) {
+        if (list->compare(curr->elem, elem) == 0) {
 
             if (prev) {
                 prev->next = curr->next;
@@ -112,7 +127,11 @@ LinkedListStatus linked_list_delete(LinkedList *list, void* elem, bool (*cmp_fn)
                 list->head = curr->next;
             }
 
-            free(curr->elem);
+            if (list->destroy) {
+                list->destroy(curr->elem);
+            } else {
+                free(curr->elem);
+            }
             free(curr);
 
             list->size--;
@@ -140,14 +159,10 @@ void linked_list_print(const LinkedList *list, void (*print_elem)(void*)) {
 
 // UTILS 
 
-void print_int(void* data) {
-    printf("%d", *(int*)data);
-}
-
-bool cmp_int(void* a, void* b) {
-    return *(int*)a == *(int*)b;
-}
-
 bool linked_list_is_empty(const LinkedList* list) {
     return !list || list->size == 0;
+}
+
+size_t linked_list_g_size(const LinkedList* list) {
+    return list->size;
 }
