@@ -1,4 +1,4 @@
-#include "hash_map.h"
+#include "data_structures/hash_map.h"
 #include "utils.h"
 
 #include <stdlib.h>

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "test.h"
-#include "linked_list.h"
-#include "comparators.h"
+#include "data_structures/linked_list.h"
+#include "data_structures/comparators.h"
 
 // BASE CASES
 

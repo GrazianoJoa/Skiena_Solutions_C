@@ -1,7 +1,7 @@
 #pragma once
 
 #include "test.h"
-#include "stack.h"
+#include "data_structures/stack.h"
 #include <stdlib.h>
 
 // BASE CASES

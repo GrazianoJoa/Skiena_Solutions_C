@@ -4,8 +4,6 @@
 #include "data_structures/hash_map_test.h"
 #include "data_structures/binary_search_tree_test.h"
 
-TestContext test_ctx = {0, 0, 0, 0};
-
 int main() {
   // STACK TEST
   RUN_TEST(t_stack_create_destroy);

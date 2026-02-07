@@ -37,4 +37,5 @@
 
 .cache/
 compile_commands.json
-run_tests
+run_tests_ex
+run_tests_src

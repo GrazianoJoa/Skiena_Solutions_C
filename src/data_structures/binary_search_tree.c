@@ -1,4 +1,4 @@
-#include "binary_search_tree.h"
+#include "data_structures/binary_search_tree.h"
 #include <stdio.h>
 #include <string.h>
 
