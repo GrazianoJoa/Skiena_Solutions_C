@@ -4,16 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Node{
+typedef struct HashNode{
     void* value;
     char* key;
-    struct Node* next;
-} Node;
+    struct HashNode* next;
+} HashNode;
 
 struct HashMap {
     size_t capacity;
     size_t elem_size;
-    Node** list;
+    HashNode** list;
     hash_fn hash;
 
     copy_fn copy;
@@ -34,7 +34,7 @@ HashMap* hash_map_create(size_t elem_size, size_t capacity, hash_fn hash, copy_f
     HashMap* hp = malloc(sizeof(HashMap));
     if (!hp) return NULL;
 
-    hp->list = calloc(capacity, sizeof(Node*));
+    hp->list = calloc(capacity, sizeof(HashNode*));
     if (!hp->list) {
         free(hp);
         return NULL;
@@ -59,9 +59,9 @@ void hash_map_destroy(HashMap **hp) {
     if (!hp || !(*hp)) return;
 
     for (size_t i = 0; i < (*hp)->capacity; i++) {
-        Node* curr = (*hp)->list[i];
+        HashNode* curr = (*hp)->list[i];
         while (curr) {
-            Node* next = curr->next;
+            HashNode* next = curr->next;
             if ((*hp)->destroy) {
                 (*hp)->destroy(curr->value);
             } else {
@@ -84,7 +84,7 @@ HashMapStatus hash_map_insert(HashMap* hp, const char* key, void* value) {
     
     size_t index = hp->hash(hp, key);
 
-    Node* curr = hp->list[index];
+    HashNode* curr = hp->list[index];
     while (curr) {
         if (strcmp(key, curr->key) == 0) {
             if (hp->destroy) {
@@ -107,7 +107,7 @@ HashMapStatus hash_map_insert(HashMap* hp, const char* key, void* value) {
         curr = curr->next;
     }
 
-    Node* new_node = malloc(sizeof(Node));
+    HashNode* new_node = malloc(sizeof(HashNode));
     if (!new_node) return HASH_MAP_ERR_ALLOC_MEM;
 
     new_node->key = malloc(strlen(key) + 1);
@@ -143,7 +143,7 @@ HashMapStatus hash_map_get(HashMap *hp, const char *key, void* out) {
 
     size_t index = hp->hash(hp, key);
 
-    Node* curr = hp->list[index];
+    HashNode* curr = hp->list[index];
     while (curr) {
         if (strcmp(key, curr->key) == 0) {
             if (hp->copy) {
@@ -166,7 +166,7 @@ bool hash_map_contains(HashMap *hp, const char *key) {
 
     size_t index = hp->hash(hp, key);
 
-    Node* curr = hp->list[index];
+    HashNode* curr = hp->list[index];
     while (curr) {
         if (strcmp(key, curr->key) == 0) return true;
         curr = curr->next;

@@ -2,15 +2,15 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef struct Node {
+typedef struct TreeNode {
     void* elem;
-    struct Node* left;
-    struct Node* right;
-} Node;
+    struct TreeNode* left;
+    struct TreeNode* right;
+} TreeNode;
 
 struct BinarySearchTree {
     size_t elem_size;
-    Node* root;
+    TreeNode* root;
 
     copy_fn copy;
     destroy_fn destroy;
@@ -33,7 +33,7 @@ BinarySearchTree* binary_search_tree_create(size_t elem_size, copy_fn copy, dest
     return bst;
 }
 
-void node_destroy(Node** node, destroy_fn destroy) {
+void node_destroy(TreeNode** node, destroy_fn destroy) {
     if (!node || !(*node)) return;
     node_destroy(&(*node)->left, destroy);
     node_destroy(&(*node)->right, destroy);
@@ -55,8 +55,8 @@ void binary_search_tree_destroy(BinarySearchTree **bst) {
     *bst = NULL;
 }
 
-Node* node_create(void* elem, size_t elem_size, copy_fn copy) {
-    Node* new_node = malloc(sizeof(Node));
+TreeNode* node_create(void* elem, size_t elem_size, copy_fn copy) {
+    TreeNode* new_node = malloc(sizeof(TreeNode));
     if (!new_node) return NULL;
 
     new_node->elem = malloc(sizeof(elem_size));
@@ -74,7 +74,7 @@ Node* node_create(void* elem, size_t elem_size, copy_fn copy) {
     return new_node;
 }
 
-int node_insert(Node** node, void* elem, size_t elem_size, copy_fn copy, compare_fn compare) {
+int node_insert(TreeNode** node, void* elem, size_t elem_size, copy_fn copy, compare_fn compare) {
     if (!(*node)) {
         *node = node_create(elem, elem_size, copy);
         return (*node) ? 0 : -1;

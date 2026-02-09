@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "utils.h"
 
+typedef struct TreeNode TreeNode;
+
 typedef enum BinarySearchTreeStatus {
     BINARY_SEARCH_TREE_OK = 0,
     BINARY_SEARCH_TREE_ERR_NULL,

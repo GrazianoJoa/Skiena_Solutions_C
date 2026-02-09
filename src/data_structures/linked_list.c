@@ -5,13 +5,13 @@
 #include "data_structures/linked_list.h"
 #include "utils.h"
 
-typedef struct Node {
+typedef struct ListNode {
     void* elem;
-    struct Node* next;
-} Node;
+    struct ListNode* next;
+} ListNode;
 
 struct LinkedList {
-    Node* head;
+    ListNode* head;
     size_t elem_size;
     size_t size;
 
@@ -46,9 +46,9 @@ LinkedList* linked_list_create(size_t elem_size, copy_fn copy, destroy_fn destro
 void linked_list_destroy(LinkedList **list) {
     if (!list || !(*list)) return;
 
-    Node* curr = (*list)->head;
+    ListNode* curr = (*list)->head;
     while (curr) {
-        Node* tmp = curr->next;
+        ListNode* tmp = curr->next;
         if ((*list)->destroy) {
             (*list)->destroy(curr->elem);
         } else {
@@ -69,7 +69,7 @@ LinkedListStatus linked_list_insert_at(LinkedList *list, size_t pos, void *elem)
 
     if (pos > list->size) return LINKED_LIST_ERR_INVALID_ARG;
 
-    Node* new_node = malloc(sizeof(Node));
+    ListNode* new_node = malloc(sizeof(ListNode));
     if (!new_node) return LINKED_LIST_ERR_ASSIGN_MEM;
 
     new_node->elem = malloc(list->elem_size);
@@ -91,7 +91,7 @@ LinkedListStatus linked_list_insert_at(LinkedList *list, size_t pos, void *elem)
         return LINKED_LIST_OK;
     }
 
-    Node* curr = list->head;
+    ListNode* curr = list->head;
     for (size_t i = 0; i < pos - 1; i++) {
         curr = curr->next;
     }
@@ -117,8 +117,8 @@ LinkedListStatus linked_list_delete(LinkedList *list, void* elem) {
 
     if (linked_list_is_empty(list)) return LINKED_LIST_ERR_EMPTY;
 
-    Node* curr = list->head;
-    Node* prev = NULL;
+    ListNode* curr = list->head;
+    ListNode* prev = NULL;
 
     for (size_t i = 0; i < list->size; i++) {
         if (list->compare(curr->elem, elem) == 0) {
@@ -151,7 +151,7 @@ LinkedListStatus linked_list_delete(LinkedList *list, void* elem) {
 void linked_list_print(const LinkedList *list, void (*print_elem)(void*)) {
     if (!list || !print_elem) return;
 
-    Node* curr = list->head;
+    ListNode* curr = list->head;
     while (curr != NULL) {
         print_elem(curr->elem);
         curr = curr->next;
@@ -167,4 +167,20 @@ bool linked_list_is_empty(const LinkedList* list) {
 
 size_t linked_list_g_size(const LinkedList* list) {
     return list->size;
+}
+
+ListNode* linked_list_g_head(const LinkedList* list) {
+  return list->head;
+}
+
+void linked_list_s_head(LinkedList* list, ListNode* node) {
+  list->head = node;
+} 
+
+ListNode* list_node_g_next(const ListNode* node) {
+  return node->next;
+}
+
+void list_node_s_next(ListNode* node, ListNode* next) {
+  node->next = next;
 }

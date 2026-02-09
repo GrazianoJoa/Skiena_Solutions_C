@@ -3,6 +3,7 @@
 
 int main() {
   RUN_TEST(t_balanced_parens);
+  RUN_TEST(t_longest_balanced_parens); 
   test_report();
 }
 
