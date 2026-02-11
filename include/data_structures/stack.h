@@ -23,5 +23,6 @@ StackStatus stack_push(Stack* stack, void* elem);
 StackStatus stack_pop(Stack* stack, void* pop);
 StackStatus stack_peek(Stack* stack, void* peek);
 bool stack_is_empty(const Stack* s);
+size_t stack_g_size(const Stack* s);
 
 #endif

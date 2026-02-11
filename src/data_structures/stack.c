@@ -133,7 +133,12 @@ StackStatus stack_peek(Stack* s, void* peek) {
     return STACK_OK;
 }
 
+// UTILS
+
 bool stack_is_empty(const Stack* s) {
     return s == NULL || s->size == 0;
 }
 
+size_t stack_g_size(const Stack* s) {
+  return s->size;
+}
