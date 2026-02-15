@@ -77,11 +77,6 @@ LinkedListStatus reverse_linked_list(LinkedList** list) {
 }
 
 // 3.4
-typedef struct MinStack {
-  Stack* min;
-  Stack* stack;
-  size_t capacity;
-} MinStack;
 
 // CAUTION: THERES NO ERROR HANDLING OR NOT NULL CHECKING IN THE IMPLEMENTATION.
 
@@ -99,6 +94,16 @@ MinStack* minstack_create(size_t capacity) {
   
   ms->capacity = capacity;
   return ms;
+}
+
+void minstack_destroy(MinStack** ms) {
+  if (!ms || !(*ms)) return;
+
+  stack_destroy(&(*ms)->stack);
+  stack_destroy(&(*ms)->min);
+
+  free(*ms);
+  *ms = NULL;
 }
 
 int minstack_push(MinStack* ms, int* value) {
@@ -125,6 +130,13 @@ int minstack_pop(MinStack* ms, int* pop) {
   return 0;
 }
 
+int minstack_peek(MinStack* ms, int* peek) {
+  if (stack_is_empty(ms->stack)) return 1;
+
+  stack_peek(ms->stack, peek);
+  return 0;
+}
+
 int minstack_findmin(MinStack* ms, int* min) {
   if (stack_is_empty(ms->min)) return 1;
 
@@ -135,11 +147,13 @@ int minstack_findmin(MinStack* ms, int* min) {
 
 // 3.5
 
+// TODO: IMPLEMENT A DYNAMIC ARRAY IN DATA STRUCTURES FOLDER AND EXTEND IN THIS IMPLEMENTATION
+
 typedef struct ShrinkArray {
   int* data;
   size_t capacity;
   size_t size;
 } ShrinkArray;
 
-// 3.6
+// 3.7
 
